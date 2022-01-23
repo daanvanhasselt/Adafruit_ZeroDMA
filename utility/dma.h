@@ -99,6 +99,15 @@ enum dma_event_output_selection {
   DMA_EVENT_OUTPUT_BEAT, // Event strobe when beat xfer complete
 };
 
+enum dma_event_input_action {
+  DMA_EVENT_INPUT_ACTION_NOACT = DMAC_CHCTRLB_EVACT_NOACT,
+  DMA_EVENT_INPUT_ACTION_TRIG = DMAC_CHCTRLB_EVACT_TRIG,
+  DMA_EVENT_INPUT_ACTION_CTRIG = DMAC_CHCTRLB_EVACT_CTRIG,
+  DMA_EVENT_INPUT_ACTION_CBLOCK = DMAC_CHCTRLB_EVACT_CBLOCK,
+  DMA_EVENT_INPUT_ACTION_SUSPEND = DMAC_CHCTRLB_EVACT_SUSPEND,
+  DMA_EVENT_INPUT_ACTION_RESUME = DMAC_CHCTRLB_EVACT_RESUME
+};
+
 enum dma_block_action {
   DMA_BLOCK_ACTION_NOACT = 0,
   // Channel in normal operation and sets transfer complete interrupt

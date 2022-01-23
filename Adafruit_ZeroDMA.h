@@ -157,6 +157,13 @@ public:
   void setPriority(dma_priority pri);
 
   /*!
+    @brief  Set DMA channel event input action
+    @param  act  DMA_PRIORITY_0 (lowest priority) through DMA_PRIORITY_3
+                 (highest priority).
+  */
+  void setEventInputAction(dma_event_input_action act);
+
+  /*!
     @brief  Print (to Serial console) a string corresponding to a DMA
             job status value.
     @param  s  Job status as might be returned by allocate(), startJob(),

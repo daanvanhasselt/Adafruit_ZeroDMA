@@ -298,6 +298,11 @@ void Adafruit_ZeroDMA::setPriority(dma_priority pri) {
 #endif
 }
 
+void Adafruit_ZeroDMA::setEventInputAction(dma_event_input_action act) {
+  DMAC->CHCTRLB.bit.EVACT = act;
+  DMAC->CHCTRLB.bit.EVIE = (act != DMA_EVENT_INPUT_ACTION_NOACT);
+}
+
 // Deallocate DMA channel
 // TODO: should this delete/deallocate the descriptor list?
 ZeroDMAstatus Adafruit_ZeroDMA::free(void) {
