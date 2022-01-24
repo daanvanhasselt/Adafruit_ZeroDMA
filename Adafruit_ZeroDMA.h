@@ -165,95 +165,93 @@ public:
                   If any other action is passed, the EVIE bit is automatically set to 1.
                   This needs to be called after allocating
   */
-};
-void setEventInputAction(dma_event_input_action act);
+  void setEventInputAction(dma_event_input_action act);
 
-/*!
-  @brief  Print (to Serial console) a string corresponding to a DMA
-          job status value.
-  @param  s  Job status as might be returned by allocate(), startJob(),
-              etc., e.g. DMA_STATUS_OK, DMA_STATUS_ERR_NOT_FOUND, ...
-*/
-void printStatus(ZeroDMAstatus s = DMA_STATUS_JOBSTATUS);
+  /*!
+    @brief  Print (to Serial console) a string corresponding to a DMA
+            job status value.
+    @param  s  Job status as might be returned by allocate(), startJob(),
+                etc., e.g. DMA_STATUS_OK, DMA_STATUS_ERR_NOT_FOUND, ...
+  */
+  void printStatus(ZeroDMAstatus s = DMA_STATUS_JOBSTATUS);
 
-/*!
-  @brief   Get the DMA channel index associated with a ZeroDMA object.
-  @return  uint8_t  Channel index (0 to DMAC_CH_NUM-1, or 0xFF).
-*/
-uint8_t getChannel(void);
+  /*!
+    @brief   Get the DMA channel index associated with a ZeroDMA object.
+    @return  uint8_t  Channel index (0 to DMAC_CH_NUM-1, or 0xFF).
+  */
+  uint8_t getChannel(void);
 
-// DMA descriptor functions
+  // DMA descriptor functions
 
-/*!
-  @brief   Allocate and append a DMA descriptor to a channel's descriptor
-           list. Channel must be allocated first.
-  @param   src       Source address.
-  @param   dst       Destination address.
-  @param   count     Transfer count.
-  @param   size      Per-count transfer size (DMA_BEAT_SIZE_BYTE,
-                     DMA_BEAT_SIZE_HWORD or DMA_BEAT_SIZE_WORD for 8, 16,
-                     32 bits respectively).
-  @param   srcInc    If true, increment the source address following each
-                     count.
-  @param   dstInc    If true, increment the destination address following
-                     each count.
-  @param   stepSize  If source/dest address increment in use, this indicates
-                     the 'step size' (allowing it to skip over elements).
-                     DMA_ADDRESS_INCREMENT_STEP_SIZE_1 for a contiguous
-                     transfer, "_SIZE_2 for alternate items, "_SIZE_4
-                     8, 16, 32, 64 or 128 for other skip ranges.
-  @param   stepSel   DMA_STEPSEL_SRC or DMA_STEPSEL_DST depending which
-                     pointer the step size should apply to (can't be used
-                     on both simultaneously).
-  @return  DmacDescriptor*  Pointer to DmacDescriptor structure, or NULL
-                            on various errors. Calling code should keep the
-                            pointer for later if it needs to change or free
-                            the descriptor.
-*/
-DmacDescriptor *
-addDescriptor(void *src, void *dst, uint32_t count = 0,
-              dma_beat_size size = DMA_BEAT_SIZE_BYTE, bool srcInc = true,
-              bool dstInc = true,
-              uint32_t stepSize = DMA_ADDRESS_INCREMENT_STEP_SIZE_1,
-              bool stepSel = DMA_STEPSEL_DST);
+  /*!
+    @brief   Allocate and append a DMA descriptor to a channel's descriptor
+             list. Channel must be allocated first.
+    @param   src       Source address.
+    @param   dst       Destination address.
+    @param   count     Transfer count.
+    @param   size      Per-count transfer size (DMA_BEAT_SIZE_BYTE,
+                       DMA_BEAT_SIZE_HWORD or DMA_BEAT_SIZE_WORD for 8, 16,
+                       32 bits respectively).
+    @param   srcInc    If true, increment the source address following each
+                       count.
+    @param   dstInc    If true, increment the destination address following
+                       each count.
+    @param   stepSize  If source/dest address increment in use, this indicates
+                       the 'step size' (allowing it to skip over elements).
+                       DMA_ADDRESS_INCREMENT_STEP_SIZE_1 for a contiguous
+                       transfer, "_SIZE_2 for alternate items, "_SIZE_4
+                       8, 16, 32, 64 or 128 for other skip ranges.
+    @param   stepSel   DMA_STEPSEL_SRC or DMA_STEPSEL_DST depending which
+                       pointer the step size should apply to (can't be used
+                       on both simultaneously).
+    @return  DmacDescriptor*  Pointer to DmacDescriptor structure, or NULL
+                              on various errors. Calling code should keep the
+                              pointer for later if it needs to change or free
+                              the descriptor.
+  */
+  DmacDescriptor *
+  addDescriptor(void *src, void *dst, uint32_t count = 0,
+                dma_beat_size size = DMA_BEAT_SIZE_BYTE, bool srcInc = true,
+                bool dstInc = true,
+                uint32_t stepSize = DMA_ADDRESS_INCREMENT_STEP_SIZE_1,
+                bool stepSel = DMA_STEPSEL_DST);
 
-/*!
-  @brief  Change a previously-allocated DMA descriptor. Only the most
-          common settings (source, dest, count) are available here. For
-          anything more esoteric, you'll need to modify the descriptor
-          structure yourself.
-  @param  d      Pointer to descriptor structure (as returned by
-                 addDescriptor()).
-  @param  src    New source address.
-  @param  dst    New destination address.
-  @param  count  New transfer count.
-*/
-void changeDescriptor(DmacDescriptor *d, void *src = NULL, void *dst = NULL,
-                      uint32_t count = 0);
+  /*!
+    @brief  Change a previously-allocated DMA descriptor. Only the most
+            common settings (source, dest, count) are available here. For
+            anything more esoteric, you'll need to modify the descriptor
+            structure yourself.
+    @param  d      Pointer to descriptor structure (as returned by
+                   addDescriptor()).
+    @param  src    New source address.
+    @param  dst    New destination address.
+    @param  count  New transfer count.
+  */
+  void changeDescriptor(DmacDescriptor *d, void *src = NULL, void *dst = NULL,
+                        uint32_t count = 0);
 
-/*!
-  @brief  Interrupt handler function, used internally by the library,
-          DO NOT TOUCH!
-  @param  flags  Channel number, actually.
-*/
-void _IRQhandler(uint8_t flags);
+  /*!
+    @brief  Interrupt handler function, used internally by the library,
+            DO NOT TOUCH!
+    @param  flags  Channel number, actually.
+  */
+  void _IRQhandler(uint8_t flags);
 
-/*!
-  @brief   Test if DMA transfer is in-progress. Might be better to use
-           callback and flag, unsure.
-  @return  'true' if DMA channel is busy, 'false' otherwise.
-*/
-bool isActive();
+  /*!
+    @brief   Test if DMA transfer is in-progress. Might be better to use
+             callback and flag, unsure.
+    @return  'true' if DMA channel is busy, 'false' otherwise.
+  */
+  bool isActive();
 
 protected:
-uint8_t channel;                                      ///< DMA channel index (0 to DMAC_CH_NUM-1, or 0xFF)
-volatile enum ZeroDMAstatus jobStatus;                ///< Last known DMA job status
-bool hasDescriptors;                                  ///< 'true' if one or more descriptors assigned
-bool loopFlag;                                        ///< 'true' if descriptor chain loops back to start
-uint8_t peripheralTrigger;                            ///< Value set by setTrigger()
-dma_transfer_trigger_action triggerAction;            ///< Value set by setAction()
-void (*callback[DMA_CALLBACK_N])(Adafruit_ZeroDMA *); ///< Callback func *s
-}
-;
+  uint8_t channel;                                      ///< DMA channel index (0 to DMAC_CH_NUM-1, or 0xFF)
+  volatile enum ZeroDMAstatus jobStatus;                ///< Last known DMA job status
+  bool hasDescriptors;                                  ///< 'true' if one or more descriptors assigned
+  bool loopFlag;                                        ///< 'true' if descriptor chain loops back to start
+  uint8_t peripheralTrigger;                            ///< Value set by setTrigger()
+  dma_transfer_trigger_action triggerAction;            ///< Value set by setAction()
+  void (*callback[DMA_CALLBACK_N])(Adafruit_ZeroDMA *); ///< Callback func *s
+};
 
 #endif // _ADAFRUIT_ZERODMA_H_
